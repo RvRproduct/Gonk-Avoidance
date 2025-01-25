@@ -14,6 +14,8 @@ enum class CurrentMode : uint8
 	Combat
 };
 
+class ABaseUnit;
+
 
 UCLASS()
 class GONKAVOIDANCE_API AGameManager : public AActor
@@ -29,6 +31,9 @@ public:
 
 	CurrentMode currentMode = CurrentMode::Move;
 	int turnNumber = 1;
+
+	TArray<ABaseUnit*> playerUnits;
+	TArray<ABaseUnit*> opponentUnits;
 
 protected:
 	// Called when the game starts or when spawned

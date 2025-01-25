@@ -37,14 +37,26 @@ public:
 	// Sets default values for this actor's properties
 	ABaseTile();
 
+	// Can a Unit be on this Tile or Cross this tile
+	bool validTile = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tile Type")
 	TileType tileType = TileType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Units")
 	UnitType unitType = UnitType::None;
 
+	UPROPERTY(VisibleAnywhere, Category = "Tile Left")
+	ABaseTile* leftTile;
 
-	bool validTile = false;
+	UPROPERTY(VisibleAnywhere, Category = "Tile Right")
+	ABaseTile* rightTile;
+
+	UPROPERTY(VisibleAnywhere, Category = "Tile Up")
+	ABaseTile* upTile;
+
+	UPROPERTY(VisibleAnywhere, Category = "Tile Down")
+	ABaseTile* downTile;
 
 protected:
 	// Called when the game starts or when spawned

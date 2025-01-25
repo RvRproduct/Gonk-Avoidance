@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameManager.h"
 #include "BaseTile.h"
 #include "WallTile.h"
+#include "ColorTile.h"
 #include "BaseUnit.h"
 #include "MapCreator.generated.h"
 
@@ -15,36 +17,33 @@ class GONKAVOIDANCE_API AMapCreator : public AActor
 	GENERATED_BODY()
 
 private:
+	FVector mapInitialPosition = GetActorLocation();
+	FRotator mapInitialRotation = GetActorRotation();
+
 	int tileHeight = 10;
 	int tileWidth = 10;
-	int numberOfRows = 0;
-	int numberOfColumns = 0;
 	
 public:	
 	// Sets default values for this actor's properties
 	AMapCreator();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
-	int lengthPerRow = 0;
+	int lengthPerColumnsAndRows = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
-	int lengthPerColumn = 0;
+	int numberOfColumnsAndRows = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
-	TArray<TileType> mapTileTypeRows;
+	TArray<TileType> mapTileTypeColumnsAndRows;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
-	TArray<UnitType> mapUnitTypeRows;
+	TArray<UnitType> mapUnitTypeColumnsAndRows;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
-	TArray<TileType> mapTileTypeColumns;
+	int unitRaise = 5;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
-	TArray<UnitType> mapUnitTypeColumns;
-
-	TArray<TArray<ABaseTile*>> mapTiles;
-	TArray<ABaseUnit*> playerUnits;
-	TArray<ABaseUnit*> opponentUnits;
+	UPROPERTY(VisibleAnywhere, Category = "The Map")
+	TArray<ABaseTile*> mapTiles;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,5 +52,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void CreateMap(UWorld* World);
+
+	void SetUpTilePathsAndUnits(UWorld* World);
+	void SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileType, FVector position, FRotator rotation);
+
+	CurrentTileColor SetInitialUnitTileColor(TileType tileType);
 
 };

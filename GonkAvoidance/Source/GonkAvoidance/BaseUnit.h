@@ -107,7 +107,7 @@ public:
 	bool hasReachedDestination = true;
 
 	// For The Seek
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Current Tile")
+	UPROPERTY(VisibleAnywhere, Category = "Current Tile")
 	ABaseTile* currentTile;
 
 	UPROPERTY(VisibleAnywhere, Category = "Next Tile")
