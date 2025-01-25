@@ -16,6 +16,18 @@ enum class TileType : uint8
 	Blue
 };
 
+UENUM(BlueprintType)
+enum class UnitType : uint8
+{
+	None,
+	RedPlayer,
+	GreenPlayer,
+	BluePlayer,
+	RedOpponent,
+	GreenOpponent,
+	BlueOpponent
+};
+
 UCLASS()
 class GONKAVOIDANCE_API ABaseTile : public AActor
 {
@@ -25,7 +37,13 @@ public:
 	// Sets default values for this actor's properties
 	ABaseTile();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tile Type")
 	TileType tileType = TileType::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Units")
+	UnitType unitType = UnitType::None;
+
+
 	bool validTile = false;
 
 protected:

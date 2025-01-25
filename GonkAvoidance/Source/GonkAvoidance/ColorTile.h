@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BaseTile.h"
-#include "WallTile.generated.h"
+#include "ColorTile.generated.h"
 
 UCLASS()
-class GONKAVOIDANCE_API AWallTile : public ABaseTile
+class GONKAVOIDANCE_API AColorTile : public ABaseTile
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AWallTile();
+	AColorTile();
 
 protected:
 	// Called when the game starts or when spawned

@@ -4,17 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "BaseTile.h"
-#include "WallTile.generated.h"
+#include "GameManager.generated.h"
+
+UENUM(BlueprintType)
+enum class CurrentMode : uint8
+{
+	None,
+	Move,
+	Combat
+};
+
 
 UCLASS()
-class GONKAVOIDANCE_API AWallTile : public ABaseTile
+class GONKAVOIDANCE_API AGameManager : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
+
+	static AGameManager* GetInstance(UWorld* World);
+
 	// Sets default values for this actor's properties
-	AWallTile();
+	AGameManager();
+
+	CurrentMode currentMode = CurrentMode::Move;
+	int turnNumber = 1;
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,5 +37,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	static AGameManager* Instance;
 
 };

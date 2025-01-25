@@ -9,16 +9,6 @@
 #include "BaseUnit.h"
 #include "MapCreator.generated.h"
 
-UENUM(BlueprintType)
-enum class TileTypes : uint8
-{
-	None,
-	Wall,
-	Red,
-	Green,
-	Blue
-};
-
 UCLASS()
 class GONKAVOIDANCE_API AMapCreator : public AActor
 {
@@ -27,10 +17,30 @@ class GONKAVOIDANCE_API AMapCreator : public AActor
 private:
 	int tileHeight = 10;
 	int tileWidth = 10;
+	int numberOfRows = 0;
+	int numberOfColumns = 0;
 	
 public:	
 	// Sets default values for this actor's properties
 	AMapCreator();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
+	int lengthPerRow = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
+	int lengthPerColumn = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
+	TArray<TileType> mapTileTypeRows;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
+	TArray<UnitType> mapUnitTypeRows;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
+	TArray<TileType> mapTileTypeColumns;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
+	TArray<UnitType> mapUnitTypeColumns;
 
 	TArray<TArray<ABaseTile*>> mapTiles;
 	TArray<ABaseUnit*> playerUnits;

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Command.h"
 #include "InputHandler.generated.h"
 
 UENUM(BlueprintType)
@@ -29,6 +28,7 @@ enum class GeneralSelection : uint8
 	ConfirmCombat
 };
 
+class Command;
 
 UCLASS()
 class GONKAVOIDANCE_API AInputHandler : public AActor
@@ -40,11 +40,11 @@ public:
 	AInputHandler();
 
 	Command
-		* upArrow,
-		* downArrow,
-		* leftArrow,
-		* rightArrow,
-		* keyEnter;
+		*upArrow,
+		*downArrow,
+		*leftArrow,
+		*rightArrow,
+		*keyEnter;
 
 	void GeneralSelect(GeneralSelection generalSelection)
 	{

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "BaseTile.h"
 #include "BaseUnit.generated.h"
 
 UENUM(BlueprintType)
@@ -45,6 +46,18 @@ enum class UnitController : uint8
 	PlayerTwo
 };
 
+struct TilePathFinding
+{
+	float G = 0.0f;
+	float H = 0.0f;
+	float F = 0.0f;
+
+	ABaseTile* parentTile;
+	TilePathFinding* parentTileFinding;
+};
+
+class AMapCreator;
+
 UCLASS()
 class GONKAVOIDANCE_API ABaseUnit : public APawn
 {
@@ -74,6 +87,38 @@ public:
 
 	int combatPowerBoost = 2;	
 	float hitRateBoost = 25.0f;
+
+
+	// Get all of the Tiles from the Map Creator
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Map Creator")
+	AMapCreator* mapCreator;
+
+	// For A* Path Finding
+	TArray<ABaseTile*> setPathToTileTarget;
+	TArray<TPair<ABaseTile*, TilePathFinding*>> openPathToTileTarget;
+	TArray<TPair<ABaseTile*, TilePathFinding*>> closedPathToWaypointTarget;
+	TPair<ABaseTile*, TilePathFinding*> startPathTile;
+	TPair<ABaseTile*, TilePathFinding*> goalPathTile;
+	TPair<ABaseTile*, TilePathFinding*> lastPathWaypoint;
+	ABaseTile* parentTile;
+
+	bool tilePathDone = false;
+	bool hasStartedSearch = false;
+	bool hasReachedDestination = true;
+
+	// For The Seek
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Current Tile")
+	ABaseTile* currentTile;
+
+	UPROPERTY(VisibleAnywhere, Category = "Next Tile")
+	ABaseTile* nextTile;
+
+	UPROPERTY(VisibleAnywhere, Category = "Player Units")
+	TArray<ABaseUnit*> playerUnits;
+
+	UPROPERTY(VisibleAnywhere, Category = "Opponent Units")
+	TArray<ABaseUnit*> opponentUnits;
+
 	
 
 protected:
