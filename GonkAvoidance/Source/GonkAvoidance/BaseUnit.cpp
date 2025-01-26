@@ -233,35 +233,170 @@ void ABaseUnit::SearchTilePath(TPair<ABaseTile*, TilePathFinding*> thisPathTile)
 		return;
 	}
 
-	if (this)
-}
+	// Checking Left Neighbor
+	if (thisPathTile.Key->leftTile != nullptr)
+	{
+		if (!IsClosedTile(thisPathTile.Key->leftTile))
+		{
+			SetTileGHF(thisPathTile, thisPathTile.Key->leftTile, goalPathTile.Key);
+		}
+	}
 
-bool ABaseUnit::UpdateTile(ABaseTile* neighborTile, float G, float H, float F, TPair<ABaseTile*, TilePathFinding*> parentPathTile)
-{
-	return false;
+	// Checking Right Neighbor
+	if (thisPathTile.Key->rightTile != nullptr)
+	{
+		if (!IsClosedTile(thisPathTile.Key->rightTile))
+		{
+			SetTileGHF(thisPathTile, thisPathTile.Key->rightTile, goalPathTile.Key);
+		}
+	}
+
+	// Checking Up Neighbor
+	if (thisPathTile.Key->upTile != nullptr)
+	{
+		if (!IsClosedTile(thisPathTile.Key->upTile))
+		{
+			SetTileGHF(thisPathTile, thisPathTile.Key->upTile, goalPathTile.Key);
+		}
+	}
+
+	// Checking Down Neighbor
+	if (thisPathTile.Key->downTile != nullptr)
+	{
+		if (!IsClosedTile(thisPathTile.Key->downTile))
+		{
+			SetTileGHF(thisPathTile, thisPathTile.Key->downTile, goalPathTile.Key);
+		}
+	}
+
+	// By F First
+	openPathToTileTarget.Sort([](const TPair<ABaseTile*, TilePathFinding*> tilePathA, const TPair<ABaseTile*, TilePathFinding*> tilePathB)
+		{
+			return tilePathA.Value->F < tilePathB.Value->F;
+		});
+
+	// The H Second
+	openPathToTileTarget.Sort([](const TPair<ABaseTile*, TilePathFinding*> tilePathA, const TPair<ABaseTile*, TilePathFinding*> tilePathB)
+		{
+			return tilePathA.Value->H < tilePathB.Value->H;
+		});
+
+	TPair<ABaseTile*, TilePathFinding*> markerPathTile = openPathToTileTarget[0];
+	closedPathToTileTarget.Add(markerPathTile);
+
+	openPathToTileTarget.RemoveAt(0);
+
+	lastPathTile = markerPathTile;
 }
 
 void ABaseUnit::SetTileGHF(TPair<ABaseTile*, TilePathFinding*> thisPathTile, ABaseTile* neighborTile, ABaseTile* goalTile)
 {
+	if (!thisPathTile.Key || !neighborTile || !goalTile)
+	{
+		return;
+	}
 
+	float G = FVector::Dist(thisPathTile.Key->GetActorLocation(), neighborTile->GetActorLocation()) + thisPathTile.Value->G;
+	float H = FVector::Dist(neighborTile->GetActorLocation(), goalTile->GetActorLocation());
+	float F = G + H;
+
+	if (!UpdateTile(neighborTile, G, H, F, thisPathTile))
+	{
+		TPair<ABaseTile*, TilePathFinding*> newNeighborTile;
+		newNeighborTile.Value = new TilePathFinding();
+		newNeighborTile.Key = neighborTile;
+		newNeighborTile.Value->G = G;
+		newNeighborTile.Value->H = H;
+		newNeighborTile.Value->F = F;
+		newNeighborTile.Value->parentTile = thisPathTile.Key;
+		newNeighborTile.Value->parentTileFinding = thisPathTile.Value;
+
+		openPathToTileTarget.Add(newNeighborTile);
+	}
+}
+
+bool ABaseUnit::UpdateTile(ABaseTile* neighborTile, float G, float H, float F, TPair<ABaseTile*, TilePathFinding*> parentPathTile)
+{
+	for (TPair<ABaseTile*, TilePathFinding*> openTile : openPathToTileTarget)
+	{
+		if (openTile.Key == neighborTile)
+		{
+			openTile.Value->G = G;
+			openTile.Value->H = H;
+			openTile.Value->F = F;
+			openTile.Value->parentTile = parentPathTile.Key;
+			openTile.Value->parentTileFinding = parentPathTile.Value;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool ABaseUnit::IsClosedTile(ABaseTile* thisTile)
 {
-	return false;
-}
+	for (const TPair<ABaseTile*, TilePathFinding*>& closedTile : closedPathToTileTarget)
+	{
+		if (closedTile.Key == thisTile)
+		{
+			return true;
+		}
+	}
 
-ABaseTile* ABaseUnit::GetClosestPossibleTileToPlayer()
-{
-	return nullptr;
+	return false;
 }
 
 void ABaseUnit::SetTilePath()
 {
+	if (!lastPathTile.Key || !lastPathTile.Value)
+	{
+		return;
+	}
 
+	ABaseTile* beginPathTile = lastPathTile.Key;
+	TilePathFinding* beginPathTileFinding = lastPathTile.Value;
+
+	setPathToTileTarget.Add(beginPathTile);
+
+	while (startPathTile.Key != beginPathTile && beginPathTile != nullptr)
+	{
+		beginPathTile = beginPathTileFinding->parentTile;
+		setPathToTileTarget.Add(beginPathTile);
+		beginPathTileFinding = beginPathTileFinding->parentTileFinding;
+	}
+
+	if (beginPathTile != startPathTile.Key)
+	{
+		setPathToTileTarget.Add(startPathTile.Key);
+	}
+
+	if (setPathToTileTarget.Num() > 0)
+	{
+		while (nextTile == currentTile && setPathToTileTarget.Num() > 0)
+		{
+			nextTile = setPathToTileTarget.Pop();
+		}
+	}
 }
 
 void ABaseUnit::Seek(FVector tilePosition, float DeltaTime)
 {
+	float distanceToTile = FVector::Dist(this->GetActorLocation(), tilePosition);
+	float ArrivalRadius = 3.0f;
 
+	FVector newUnitPosition = tilePosition;
+	newUnitPosition.Z = this->GetActorLocation().Z;
+
+	if (distanceToTile <= ArrivalRadius)
+	{
+		currentVelocity = FVector::ZeroVector;
+		SetActorLocation(newUnitPosition);
+
+		return;
+	}
+
+	FVector direction = (newUnitPosition - this->GetActorLocation()).GetSafeNormal();
+	currentVelocity = direction * maxSpeed;
+
+	SetActorLocation(this->GetActorLocation() + currentVelocity * DeltaTime);
 }

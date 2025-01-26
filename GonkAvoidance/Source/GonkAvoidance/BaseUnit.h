@@ -120,6 +120,12 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Opponent Units")
 	TArray<ABaseUnit*> opponentUnits;
 
+	UPROPERTY(VisibleAnywhere, Category = "Max Speed")
+	float maxSpeed = 600.0f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	FVector currentVelocity = FVector::ZeroVector;
+
 	
 
 protected:
@@ -141,7 +147,6 @@ public:
 	bool UpdateTile(ABaseTile* neighborTile, float G, float H, float F, TPair<ABaseTile*, TilePathFinding*> parentPathTile);
 	void SetTileGHF(TPair<ABaseTile*, TilePathFinding*> thisPathTile, ABaseTile* neighborTile, ABaseTile* goalTile);
 	bool IsClosedTile(ABaseTile* thisTile);
-	ABaseTile* GetClosestPossibleTileToPlayer();
 	void SetTilePath();
 
 };
