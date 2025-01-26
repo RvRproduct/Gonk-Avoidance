@@ -35,32 +35,33 @@ void AMapCreator::CreateMap(UWorld* World)
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	for (int currentColumn = 1; currentColumn <= numberOfColumnsAndRows; currentColumn++)
+	int currentTileIndex = 0;
+	for (int currentColumn = 0; currentColumn < numberOfColumnsAndRows; currentColumn++)
 	{
 		for (int currentRow = 0; currentRow < lengthPerColumnsAndRows; currentRow++)
 		{
-			if (mapTileTypeColumnsAndRows[currentRow * currentColumn] == TileType::Wall)
+			if (mapTileTypeColumnsAndRows[currentTileIndex] == TileType::Wall)
 			{
 				AWallTile* SpawnedTile = World->SpawnActor<AWallTile>(AWallTile::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				SpawnedTile->tileType = TileType::Wall;
 				SpawnedTile->validTile = false;
 				mapTiles.Add(SpawnedTile);
 			}
-			else if (mapTileTypeColumnsAndRows[currentRow * currentColumn] == TileType::Red)
+			else if (mapTileTypeColumnsAndRows[currentTileIndex] == TileType::Red)
 			{
 				AColorTile* SpawnedTile = World->SpawnActor<AColorTile>(AColorTile::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				SpawnedTile->tileType = TileType::Red;
 				SpawnedTile->validTile = true;
 				mapTiles.Add(SpawnedTile);
 			}
-			else if (mapTileTypeColumnsAndRows[currentRow * currentColumn] == TileType::Green)
+			else if (mapTileTypeColumnsAndRows[currentTileIndex] == TileType::Green)
 			{
 				AColorTile* SpawnedTile = World->SpawnActor<AColorTile>(AColorTile::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				SpawnedTile->tileType = TileType::Green;
 				SpawnedTile->validTile = true;
 				mapTiles.Add(SpawnedTile);
 			}
-			else if (mapTileTypeColumnsAndRows[currentRow * currentColumn] == TileType::Blue)
+			else if (mapTileTypeColumnsAndRows[currentTileIndex] == TileType::Blue)
 			{
 				AColorTile* SpawnedTile = World->SpawnActor<AColorTile>(AColorTile::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				SpawnedTile->tileType = TileType::Blue;
@@ -69,6 +70,7 @@ void AMapCreator::CreateMap(UWorld* World)
 			}
 
 			SpawnLocation.X += tileWidth;
+			currentTileIndex++;
 		}
 
 		SpawnLocation.X = mapInitialPosition.X;
@@ -79,11 +81,78 @@ void AMapCreator::CreateMap(UWorld* World)
 
 void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 {
-	for (int currentColumn = 1; currentColumn <= numberOfColumnsAndRows; currentColumn++)
+	int currentTileIndex = 0;
+	for (int currentColumn = 0; currentColumn < numberOfColumnsAndRows; currentColumn++)
 	{
 		for (int currentRow = 0; currentRow < lengthPerColumnsAndRows; currentRow++)
 		{
+			// Left
+			if (currentTileIndex - 1 >= currentColumn * lengthPerColumnsAndRows)
+			{
+				if (currentTileIndex - 1 >= 0)
+				{
+					if (mapTiles[currentTileIndex - 1]->validTile)
+					{
+						mapTiles[currentTileIndex]->leftTile = mapTiles[currentTileIndex - 1];
 
+						SetUnitOnTile(World, 
+							mapUnitTypeColumnsAndRows[currentTileIndex],
+							mapTileTypeColumnsAndRows[currentTileIndex],
+							mapTiles[currentTileIndex]->GetActorLocation(),
+							mapTiles[currentTileIndex]->GetActorRotation());
+					}
+				}
+			}
+
+			// Right
+			if (currentTileIndex + 1 < (currentColumn + 1) * lengthPerColumnsAndRows)
+			{
+				if (currentTileIndex + 1 < mapTiles.Num())
+				{
+					if (mapTiles[currentTileIndex + 1]->validTile)
+					{
+						mapTiles[currentTileIndex]->rightTile = mapTiles[currentTileIndex + 1];
+
+						SetUnitOnTile(World,
+							mapUnitTypeColumnsAndRows[currentTileIndex],
+							mapTileTypeColumnsAndRows[currentTileIndex],
+							mapTiles[currentTileIndex]->GetActorLocation(),
+							mapTiles[currentTileIndex]->GetActorRotation());
+					}
+				}
+			}
+
+			// Up
+			if (currentTileIndex - lengthPerColumnsAndRows >= 0)
+			{
+				if (mapTiles[currentTileIndex - lengthPerColumnsAndRows]->validTile)
+				{
+					mapTiles[currentTileIndex]->upTile = mapTiles[currentTileIndex - lengthPerColumnsAndRows];
+
+					SetUnitOnTile(World,
+						mapUnitTypeColumnsAndRows[currentTileIndex],
+						mapTileTypeColumnsAndRows[currentTileIndex],
+						mapTiles[currentTileIndex]->GetActorLocation(),
+						mapTiles[currentTileIndex]->GetActorRotation());
+				}
+			}
+
+			// Down
+			if (currentTileIndex + lengthPerColumnsAndRows < mapTiles.Num())
+			{
+				if (mapTiles[currentTileIndex + lengthPerColumnsAndRows]->validTile)
+				{
+					mapTiles[currentTileIndex]->downTile = mapTiles[currentTileIndex + lengthPerColumnsAndRows];
+
+					SetUnitOnTile(World,
+						mapUnitTypeColumnsAndRows[currentTileIndex],
+						mapTileTypeColumnsAndRows[currentTileIndex],
+						mapTiles[currentTileIndex]->GetActorLocation(),
+						mapTiles[currentTileIndex]->GetActorRotation());
+				}
+			}
+
+			currentTileIndex++;	
 		}
 	}
 }
@@ -123,19 +192,26 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->unitColor = UnitColor::Blue;
 		SpawnedUnit->unitController = UnitController::Player;
 	}
-	else if (unitType == UnitType::RedPlayer)
+	else if (unitType == UnitType::RedOpponent)
 	{
 		ABaseUnit* SpawnedUnit = World->SpawnActor<ABaseUnit>(ABaseUnit::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
 		SpawnedUnit->unitColor = UnitColor::Red;
-		SpawnedUnit->unitController = UnitController::Player;
+		SpawnedUnit->unitController = UnitController::AI;
 	}
-	else if (unitType == UnitType::RedPlayer)
+	else if (unitType == UnitType::GreenOpponent)
 	{
 		ABaseUnit* SpawnedUnit = World->SpawnActor<ABaseUnit>(ABaseUnit::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
-		SpawnedUnit->unitColor = UnitColor::Red;
-		SpawnedUnit->unitController = UnitController::Player;
+		SpawnedUnit->unitColor = UnitColor::Green;
+		SpawnedUnit->unitController = UnitController::AI;
+	}
+	else if (unitType == UnitType::BlueOpponent)
+	{
+		ABaseUnit* SpawnedUnit = World->SpawnActor<ABaseUnit>(ABaseUnit::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
+		SpawnedUnit->unitColor = UnitColor::Blue;
+		SpawnedUnit->unitController = UnitController::AI;
 	}
 }
 
