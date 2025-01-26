@@ -28,6 +28,16 @@ enum class GeneralSelection : uint8
 	ConfirmCombat
 };
 
+UENUM(BlueprintType)
+enum class Movement : uint8
+{
+	None,
+	Left,
+	Right,
+	Up,
+	Down
+};
+
 class Command;
 
 UCLASS()
@@ -46,53 +56,9 @@ public:
 		*rightArrow,
 		*keySpace;
 
-	void GeneralSelect(GeneralSelection generalSelection)
-	{
-		if (generalSelection == GeneralSelection::ConfirmMovement)
-		{
-
-		}
-		else if (generalSelection == GeneralSelection::UndoMovement)
-		{
-
-		}
-		else if (generalSelection == GeneralSelection::RedoMovement)
-		{
-
-		}
-		else if (generalSelection == GeneralSelection::ConfirmCombat)
-		{
-
-		}
-	}
-
-	void CombatSelect(CombatSelection combatSelection)
-	{
-		if (combatSelection == CombatSelection::Attack)
-		{
-
-		}
-		else if (combatSelection == CombatSelection::Strike)
-		{
-
-		}
-		else if (combatSelection == CombatSelection::Charge)
-		{
-
-		}
-		else if (combatSelection == CombatSelection::Defend)
-		{
-
-		}
-		else if (combatSelection == CombatSelection::Counter)
-		{
-
-		}
-		else if (combatSelection == CombatSelection::Evade)
-		{
-
-		}
-	}
+	void GeneralSelect(GeneralSelection generalSelection);
+	void CombatSelect(CombatSelection combatSelection);
+	void MoveSelect(Movement moveInput);
 
 protected:
 	// Called when the game starts or when spawned

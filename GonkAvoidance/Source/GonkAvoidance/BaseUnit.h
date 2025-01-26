@@ -57,6 +57,8 @@ struct TilePathFinding
 	TilePathFinding* parentTileFinding;
 };
 
+class AGameManager;
+
 UCLASS()
 class GONKAVOIDANCE_API ABaseUnit : public APawn
 {
@@ -66,6 +68,10 @@ public:
 	// Sets default values for this pawn's properties
 	ABaseUnit();
 
+	// Active Unit
+	bool activeUnit = false;
+
+	// Is the Unit Setup
 	bool unitSetup = false;
 
 	// Unit Controller By (AI, Player, PlayerTwo)

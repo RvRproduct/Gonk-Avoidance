@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameManager.h"
 #include "BaseTile.h"
 #include "WallTile.h"
 #include "ColorTile.h"
 #include "BaseUnit.h"
 #include "MapCreator.generated.h"
-
-class GameManager;
 
 UCLASS()
 class GONKAVOIDANCE_API AMapCreator : public AActor
@@ -58,6 +57,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Manager")
 	AGameManager* gameManager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
+	UMaterialInterface* redMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
+	UMaterialInterface* blueMaterial;
 
 protected:
 	// Called when the game starts or when spawned

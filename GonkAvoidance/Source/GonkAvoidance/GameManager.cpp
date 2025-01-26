@@ -1,7 +1,7 @@
 // Made by Roberto Reynoso (RvRproduct)
-
-
 #include "GameManager.h"
+
+#include "BaseUnit.h"
 
 // Sets default values
 AGameManager::AGameManager()
@@ -22,5 +22,44 @@ void AGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AGameManager::CheckCurrentTurnHolder()
+{
+	if (turnNumber % 2 != 0)
+	{
+		currentTurnHolder = TurnHolder::Player;
+	}
+	else
+	{
+		currentTurnHolder = TurnHolder::Opponent;
+	}
+}
+
+void AGameManager::OnAIOpponentStart()
+{
+	if (opponentUnits.Num() > 0)
+	{
+		int randomUnitSelect = FMath::RandRange(0, opponentUnits.Num() - 1);
+
+		for (int unitIndex = 0; unitIndex < opponentUnits.Num(); unitIndex)
+		{
+			if (unitIndex == randomUnitSelect)
+			{
+				opponentUnits[unitIndex]->activeUnit = true;
+			}
+			else
+			{
+				opponentUnits[unitIndex]->activeUnit = false;
+			}
+		}
+	}
+
+	
+}
+
+void AGameManager::ChangeMode(CurrentMode modeChange)
+{
+	currentMode = modeChange;
 }
 

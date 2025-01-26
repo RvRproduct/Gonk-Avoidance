@@ -49,6 +49,16 @@ void ABaseUnit::Tick(float DeltaTime)
 
 	if (!unitSetup) { return; }
 
+	if (unitController == UnitController::AI)
+	{
+		if (gameManager->currentTurnHolder != TurnHolder::Opponent) { return; }
+	}
+	
+	if (unitController == UnitController::Player)
+	{
+		if (gameManager->currentTurnHolder != TurnHolder::Player) { return; }
+	}
+
 	if (hasReachedDestination)
 	{
 		if (!hasStartedSearch)

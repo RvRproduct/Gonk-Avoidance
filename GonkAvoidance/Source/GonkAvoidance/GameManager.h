@@ -12,7 +12,7 @@ enum class TurnHolder : uint8
 {
 	None,
 	Player,
-	Opponenet
+	Opponent
 };
 
 UENUM(BlueprintType)
@@ -52,5 +52,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void OnAIOpponentStart();
+	void CheckCurrentTurnHolder();
+	void ChangeMode(CurrentMode modeChange);
 
 };

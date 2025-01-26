@@ -189,7 +189,16 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->unitController = UnitController::Player;
 		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
 		SpawnedUnit->gameManager = gameManager;
+
+		UStaticMeshComponent* Mesh = SpawnedUnit->FindComponentByClass<UStaticMeshComponent>();
+		if (Mesh)
+		{
+			Mesh->SetMaterial(0, redMaterial);
+		}
+
 		gameManager->playerUnits.Add(SpawnedUnit);
+
+		
 	}
 	else if (unitType == UnitType::GreenPlayer)
 	{
@@ -209,6 +218,13 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->unitController = UnitController::Player;
 		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
 		SpawnedUnit->gameManager = gameManager;
+
+		UStaticMeshComponent* Mesh = SpawnedUnit->FindComponentByClass<UStaticMeshComponent>();
+		if (Mesh)
+		{
+			Mesh->SetMaterial(0, blueMaterial);
+		}
+
 		gameManager->playerUnits.Add(SpawnedUnit);
 	}
 	else if (unitType == UnitType::RedOpponent)
@@ -219,6 +235,13 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->unitController = UnitController::AI;
 		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
 		SpawnedUnit->gameManager = gameManager;
+
+		UStaticMeshComponent* Mesh = SpawnedUnit->FindComponentByClass<UStaticMeshComponent>();
+		if (Mesh)
+		{
+			Mesh->SetMaterial(0, redMaterial);
+		}
+
 		gameManager->opponentUnits.Add(SpawnedUnit);
 	}
 	else if (unitType == UnitType::GreenOpponent)
@@ -239,6 +262,14 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->unitController = UnitController::AI;
 		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
 		SpawnedUnit->gameManager = gameManager;
+
+		UStaticMeshComponent* Mesh = SpawnedUnit->FindComponentByClass<UStaticMeshComponent>();
+		if (Mesh)
+		{
+			Mesh->SetMaterial(0, blueMaterial);
+		}
+
+
 		gameManager->opponentUnits.Add(SpawnedUnit);
 	}
 }
