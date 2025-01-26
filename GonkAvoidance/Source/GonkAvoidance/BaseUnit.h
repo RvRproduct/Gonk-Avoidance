@@ -132,4 +132,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void ClearTilePath();
+	void BeginSearchTilePath();
+	void SearchTilePath(TPair<ABaseTile*, TilePathFinding*> thisPathTile);
+	bool UpdateTile(ABaseTile* neighborTile, float G, float H, float F, TPair<ABaseTile*, TilePathFinding*> parentPathTile);
+	void SetTileGHF(TPair<ABaseTile*, TilePathFinding*> thisPathTile, ABaseTile* neighborTile, ABaseTile* goalTile);
+	bool IsClosedTile(ABaseTile* thisTile);
+	ABaseTile* GetClosestPossibleTileToPlayer();
+	void SetWaypointPath();
+
 };
