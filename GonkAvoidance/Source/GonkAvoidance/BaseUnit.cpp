@@ -2,6 +2,8 @@
 
 
 #include "BaseUnit.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 ABaseUnit::ABaseUnit()
@@ -15,19 +17,6 @@ ABaseUnit::ABaseUnit()
 void ABaseUnit::BeginPlay()
 {
 	Super::BeginPlay();
-
-	lastPathTile.Key = currentTile;
-
-	if (currentTile != nullptr)
-	{
-		if (nextTile == nullptr)
-		{
-			nextTile = currentTile;
-		}
-
-		this->SetActorLocation(currentTile->GetActorLocation());
-	}
-	
 }
 
 // Called every frame
@@ -35,7 +24,32 @@ void ABaseUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (hasReachedDestination && hasSelectedMovement)
+	if (gameManager == nullptr || !gameManager->mapCreationFinished) { return; }
+
+	if (gameManager->mapCreationFinished && !unitSetup)
+	{
+		playerUnits = gameManager->playerUnits;
+		opponentUnits = gameManager->opponentUnits;
+
+
+		lastPathTile.Key = currentTile;
+
+		if (currentTile != nullptr)
+		{
+			if (nextTile == nullptr)
+			{
+				nextTile = currentTile;
+			}
+
+			this->SetActorLocation(currentTile->GetActorLocation());
+		}
+
+		unitSetup = true;
+	}
+
+	if (!unitSetup) { return; }
+
+	if (hasReachedDestination)
 	{
 		if (!hasStartedSearch)
 		{
@@ -149,6 +163,9 @@ void ABaseUnit::BeginSearchTilePath()
 			float distFromAttackTile = INFINITY;
 
 			// Checking Left Tile From Target
+
+			if (targetPlayerUnit->currentTile == nullptr) { return; }
+
 			if (targetPlayerUnit->currentTile->leftTile != nullptr)
 			{
 				float distFromThisAttackTile = FVector::Dist(this->GetActorLocation(), targetPlayerUnit->currentTile->leftTile->GetActorLocation());
@@ -200,6 +217,16 @@ void ABaseUnit::BeginSearchTilePath()
 			{
 				goalPathTile.Key = targetAttackTile;
 
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(
+						-1,
+						5.f,
+						FColor::Yellow,
+						FString::Printf(TEXT("Goal Tile: %s"), *targetAttackTile->GetName())
+					);
+				}
+
 				if (currentTile == goalPathTile.Key)
 				{
 					tilePathDone = true;
@@ -213,6 +240,8 @@ void ABaseUnit::BeginSearchTilePath()
 
 		openPathToTileTarget.Add(startPathTile);
 		lastPathTile.Key = startPathTile.Key;
+
+		
 	}
 	else if (unitController == UnitController::Player)
 	{
@@ -280,6 +309,11 @@ void ABaseUnit::SearchTilePath(TPair<ABaseTile*, TilePathFinding*> thisPathTile)
 		{
 			return tilePathA.Value->H < tilePathB.Value->H;
 		});
+
+	if (!(openPathToTileTarget.Num() > 0))
+	{
+		return;
+	}
 
 	TPair<ABaseTile*, TilePathFinding*> markerPathTile = openPathToTileTarget[0];
 	closedPathToTileTarget.Add(markerPathTile);
@@ -391,6 +425,14 @@ void ABaseUnit::Seek(FVector tilePosition, float DeltaTime)
 	{
 		currentVelocity = FVector::ZeroVector;
 		SetActorLocation(newUnitPosition);
+
+		if (!hasReachedDestination)
+		{
+			if (setPathToTileTarget.Num() > 0)
+			{
+				nextTile = setPathToTileTarget.Pop();
+			}	
+		}
 
 		return;
 	}

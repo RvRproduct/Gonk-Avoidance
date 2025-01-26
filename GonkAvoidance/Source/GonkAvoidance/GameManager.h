@@ -23,9 +23,6 @@ class GONKAVOIDANCE_API AGameManager : public AActor
 	GENERATED_BODY()
 	
 public:	
-
-	static AGameManager* GetInstance(UWorld* World);
-
 	// Sets default values for this actor's properties
 	AGameManager();
 
@@ -35,6 +32,8 @@ public:
 	TArray<ABaseUnit*> playerUnits;
 	TArray<ABaseUnit*> opponentUnits;
 
+	bool mapCreationFinished = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,8 +41,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-private:
-	static AGameManager* Instance;
 
 };

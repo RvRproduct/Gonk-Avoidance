@@ -18,7 +18,14 @@ void AMapCreator::BeginPlay()
 
 	UWorld* World = GetWorld();
 
+	gameManager->mapCreationFinished = false;
+	gameManager->playerUnits.Empty();
+	gameManager->opponentUnits.Empty();
+
 	CreateMap(World);
+
+	gameManager->mapCreationFinished = true;
+
 }
 
 // Called every frame
@@ -109,12 +116,6 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 					if (mapTiles[currentTileIndex + 1]->validTile)
 					{
 						mapTiles[currentTileIndex]->leftTile = mapTiles[currentTileIndex + 1];
-
-						SetUnitOnTile(World,
-							mapUnitTypeColumnsAndRows[currentTileIndex],
-							mapTileTypeColumnsAndRows[currentTileIndex],
-							mapTiles[currentTileIndex]->GetActorLocation(),
-							mapTiles[currentTileIndex]->GetActorRotation());
 					}
 				}
 			}
@@ -127,12 +128,6 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 					if (mapTiles[currentTileIndex - 1]->validTile)
 					{
 						mapTiles[currentTileIndex]->rightTile = mapTiles[currentTileIndex - 1];
-
-						SetUnitOnTile(World, 
-							mapUnitTypeColumnsAndRows[currentTileIndex],
-							mapTileTypeColumnsAndRows[currentTileIndex],
-							mapTiles[currentTileIndex]->GetActorLocation(),
-							mapTiles[currentTileIndex]->GetActorRotation());
 					}
 				}
 			}
@@ -144,12 +139,6 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 				if (mapTiles[currentTileIndex + lengthPerColumnsAndRows]->validTile)
 				{
 					mapTiles[currentTileIndex]->upTile = mapTiles[currentTileIndex + lengthPerColumnsAndRows];
-
-					SetUnitOnTile(World,
-						mapUnitTypeColumnsAndRows[currentTileIndex],
-						mapTileTypeColumnsAndRows[currentTileIndex],
-						mapTiles[currentTileIndex]->GetActorLocation(),
-						mapTiles[currentTileIndex]->GetActorRotation());
 				}
 			}
 
@@ -159,14 +148,15 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 				if (mapTiles[currentTileIndex - lengthPerColumnsAndRows]->validTile)
 				{
 					mapTiles[currentTileIndex]->downTile = mapTiles[currentTileIndex - lengthPerColumnsAndRows];
-
-					SetUnitOnTile(World,
-						mapUnitTypeColumnsAndRows[currentTileIndex],
-						mapTileTypeColumnsAndRows[currentTileIndex],
-						mapTiles[currentTileIndex]->GetActorLocation(),
-						mapTiles[currentTileIndex]->GetActorRotation());
 				}
 			}
+
+			SetUnitOnTile(World,
+				mapUnitTypeColumnsAndRows[currentTileIndex],
+				mapTileTypeColumnsAndRows[currentTileIndex],
+				mapTiles[currentTileIndex]->GetActorLocation(),
+				mapTiles[currentTileIndex]->GetActorRotation(),
+				currentTileIndex);
 
 
 			currentTileIndex++;	
@@ -174,9 +164,10 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 	}
 }
 
-void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileType, FVector position, FRotator rotation)
+void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileType, FVector position, FRotator rotation, int currentTileIndex)
 {
 	if (tileType == TileType::Wall) { return; }
+	if (gameManager == nullptr) { return; }
 
 	FVector SpawnLocation = position;
 	FRotator SpawnRotation = rotation;
@@ -196,6 +187,9 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
 		SpawnedUnit->unitColor = UnitColor::Red;
 		SpawnedUnit->unitController = UnitController::Player;
+		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
+		SpawnedUnit->gameManager = gameManager;
+		gameManager->playerUnits.Add(SpawnedUnit);
 	}
 	else if (unitType == UnitType::GreenPlayer)
 	{
@@ -203,6 +197,9 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
 		SpawnedUnit->unitColor = UnitColor::Green;
 		SpawnedUnit->unitController = UnitController::Player;
+		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
+		SpawnedUnit->gameManager = gameManager;
+		gameManager->playerUnits.Add(SpawnedUnit);
 	}
 	else if (unitType == UnitType::BluePlayer)
 	{
@@ -210,6 +207,9 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
 		SpawnedUnit->unitColor = UnitColor::Blue;
 		SpawnedUnit->unitController = UnitController::Player;
+		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
+		SpawnedUnit->gameManager = gameManager;
+		gameManager->playerUnits.Add(SpawnedUnit);
 	}
 	else if (unitType == UnitType::RedOpponent)
 	{
@@ -217,6 +217,9 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
 		SpawnedUnit->unitColor = UnitColor::Red;
 		SpawnedUnit->unitController = UnitController::AI;
+		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
+		SpawnedUnit->gameManager = gameManager;
+		gameManager->opponentUnits.Add(SpawnedUnit);
 	}
 	else if (unitType == UnitType::GreenOpponent)
 	{
@@ -224,6 +227,9 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
 		SpawnedUnit->unitColor = UnitColor::Green;
 		SpawnedUnit->unitController = UnitController::AI;
+		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
+		SpawnedUnit->gameManager = gameManager;
+		gameManager->opponentUnits.Add(SpawnedUnit);
 	}
 	else if (unitType == UnitType::BlueOpponent)
 	{
@@ -231,6 +237,9 @@ void AMapCreator::SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileT
 		SpawnedUnit->currentColorTile = SetInitialUnitTileColor(tileType);
 		SpawnedUnit->unitColor = UnitColor::Blue;
 		SpawnedUnit->unitController = UnitController::AI;
+		SpawnedUnit->currentTile = mapTiles[currentTileIndex];
+		SpawnedUnit->gameManager = gameManager;
+		gameManager->opponentUnits.Add(SpawnedUnit);
 	}
 }
 

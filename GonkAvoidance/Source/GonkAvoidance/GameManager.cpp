@@ -3,9 +3,6 @@
 
 #include "GameManager.h"
 
-// Initialize the static instance to nullptr
-AGameManager* AGameManager::Instance = nullptr;
-
 // Sets default values
 AGameManager::AGameManager()
 {
@@ -18,16 +15,6 @@ AGameManager::AGameManager()
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (Instance == nullptr)
-	{
-		Instance = this;
-	}
-	else
-	{
-		Destroy();
-	}
-	
 }
 
 // Called every frame
@@ -35,21 +22,5 @@ void AGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-AGameManager* AGameManager::GetInstance(UWorld* World)
-{
-	if (Instance == nullptr)
-	{
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-			Instance = World->SpawnActor<AGameManager>(AGameManager::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-		}
-	}
-
-	return Instance;
 }
 

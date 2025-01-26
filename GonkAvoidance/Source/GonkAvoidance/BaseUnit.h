@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GameManager.h"
 #include "BaseTile.h"
 #include "BaseUnit.generated.h"
 
@@ -56,8 +57,6 @@ struct TilePathFinding
 	TilePathFinding* parentTileFinding;
 };
 
-class AMapCreator;
-
 UCLASS()
 class GONKAVOIDANCE_API ABaseUnit : public APawn
 {
@@ -66,6 +65,8 @@ class GONKAVOIDANCE_API ABaseUnit : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ABaseUnit();
+
+	bool unitSetup = false;
 
 	// Unit Controller By (AI, Player, PlayerTwo)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Unit Controller Type")
@@ -89,12 +90,10 @@ public:
 	float hitRateBoost = 25.0f;
 
 
-	// Get all of the Tiles from the Map Creator
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Map Creator")
-	AMapCreator* mapCreator;
-
 	// For A* Path Finding
+	UPROPERTY(VisibleAnywhere, Category = "Path To Target")
 	TArray<ABaseTile*> setPathToTileTarget;
+
 	TArray<TPair<ABaseTile*, TilePathFinding*>> openPathToTileTarget;
 	TArray<TPair<ABaseTile*, TilePathFinding*>> closedPathToTileTarget;
 	TPair<ABaseTile*, TilePathFinding*> startPathTile;
@@ -125,6 +124,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	FVector currentVelocity = FVector::ZeroVector;
+
+	UPROPERTY(VisibleAnywhere, Category = "Game Manager")
+	AGameManager* gameManager;
 
 	
 

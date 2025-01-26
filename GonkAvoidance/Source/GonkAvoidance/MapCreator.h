@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameManager.h"
 #include "BaseTile.h"
 #include "WallTile.h"
 #include "ColorTile.h"
 #include "BaseUnit.h"
 #include "MapCreator.generated.h"
+
+class GameManager;
 
 UCLASS()
 class GONKAVOIDANCE_API AMapCreator : public AActor
@@ -54,6 +55,10 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "The Map")
 	TArray<ABaseTile*> mapTiles;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Manager")
+	AGameManager* gameManager;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -65,7 +70,7 @@ public:
 	void CreateMap(UWorld* World);
 
 	void SetUpTilePathsAndUnits(UWorld* World);
-	void SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileType, FVector position, FRotator rotation);
+	void SetUnitOnTile(UWorld* World, UnitType unitType, TileType tileType, FVector position, FRotator rotation, int currentTileIndex);
 
 	CurrentTileColor SetInitialUnitTileColor(TileType tileType);
 
