@@ -42,6 +42,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Create Map")
 	int unitRaise = 5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Create Map")
+	TSubclassOf<AWallTile> wallTileBlueprint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Create Map")
+	TSubclassOf<AColorTile> colorTileBlueprint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Create Map")
+	TSubclassOf<ABaseUnit> unitBlueprint;
+
 	UPROPERTY(VisibleAnywhere, Category = "The Map")
 	TArray<ABaseTile*> mapTiles;
 
