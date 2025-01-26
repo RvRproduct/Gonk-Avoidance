@@ -93,22 +93,12 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 	{
 		for (int currentRow = 0; currentRow < lengthPerColumnsAndRows; currentRow++)
 		{
-			// Left
-			if (currentTileIndex - 1 >= currentColumn * lengthPerColumnsAndRows)
-			{
-				if (currentTileIndex - 1 >= 0)
-				{
-					if (mapTiles[currentTileIndex - 1]->validTile)
-					{
-						mapTiles[currentTileIndex]->leftTile = mapTiles[currentTileIndex - 1];
+			if (!(currentTileIndex < mapTiles.Num())) { return; }
 
-						SetUnitOnTile(World, 
-							mapUnitTypeColumnsAndRows[currentTileIndex],
-							mapTileTypeColumnsAndRows[currentTileIndex],
-							mapTiles[currentTileIndex]->GetActorLocation(),
-							mapTiles[currentTileIndex]->GetActorRotation());
-					}
-				}
+			if (mapTiles[currentTileIndex]->tileType == TileType::Wall) 
+			{
+				currentTileIndex++;
+				continue;
 			}
 
 			// Right
@@ -118,7 +108,7 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 				{
 					if (mapTiles[currentTileIndex + 1]->validTile)
 					{
-						mapTiles[currentTileIndex]->rightTile = mapTiles[currentTileIndex + 1];
+						mapTiles[currentTileIndex]->leftTile = mapTiles[currentTileIndex + 1];
 
 						SetUnitOnTile(World,
 							mapUnitTypeColumnsAndRows[currentTileIndex],
@@ -129,12 +119,31 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 				}
 			}
 
-			// Up
-			if (currentTileIndex - lengthPerColumnsAndRows >= 0)
+			// Left
+			if (currentTileIndex - 1 >= currentColumn * lengthPerColumnsAndRows)
 			{
-				if (mapTiles[currentTileIndex - lengthPerColumnsAndRows]->validTile)
+				if (currentTileIndex - 1 >= 0)
 				{
-					mapTiles[currentTileIndex]->upTile = mapTiles[currentTileIndex - lengthPerColumnsAndRows];
+					if (mapTiles[currentTileIndex - 1]->validTile)
+					{
+						mapTiles[currentTileIndex]->rightTile = mapTiles[currentTileIndex - 1];
+
+						SetUnitOnTile(World, 
+							mapUnitTypeColumnsAndRows[currentTileIndex],
+							mapTileTypeColumnsAndRows[currentTileIndex],
+							mapTiles[currentTileIndex]->GetActorLocation(),
+							mapTiles[currentTileIndex]->GetActorRotation());
+					}
+				}
+			}
+
+
+			// Up
+			if (currentTileIndex + lengthPerColumnsAndRows < mapTiles.Num())
+			{
+				if (mapTiles[currentTileIndex + lengthPerColumnsAndRows]->validTile)
+				{
+					mapTiles[currentTileIndex]->upTile = mapTiles[currentTileIndex + lengthPerColumnsAndRows];
 
 					SetUnitOnTile(World,
 						mapUnitTypeColumnsAndRows[currentTileIndex],
@@ -145,11 +154,11 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 			}
 
 			// Down
-			if (currentTileIndex + lengthPerColumnsAndRows < mapTiles.Num())
+			if (currentTileIndex - lengthPerColumnsAndRows >= 0)
 			{
-				if (mapTiles[currentTileIndex + lengthPerColumnsAndRows]->validTile)
+				if (mapTiles[currentTileIndex - lengthPerColumnsAndRows]->validTile)
 				{
-					mapTiles[currentTileIndex]->downTile = mapTiles[currentTileIndex + lengthPerColumnsAndRows];
+					mapTiles[currentTileIndex]->downTile = mapTiles[currentTileIndex - lengthPerColumnsAndRows];
 
 					SetUnitOnTile(World,
 						mapUnitTypeColumnsAndRows[currentTileIndex],
@@ -158,6 +167,7 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 						mapTiles[currentTileIndex]->GetActorRotation());
 				}
 			}
+
 
 			currentTileIndex++;	
 		}
