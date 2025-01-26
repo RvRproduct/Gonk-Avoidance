@@ -39,6 +39,9 @@ public:
 
 	// Can a Unit be on this Tile or Cross this tile
 	bool validTile = false;
+	bool unitOccupiedTile = false;
+	bool attackTile = false;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tile Type")
 	TileType tileType = TileType::None;

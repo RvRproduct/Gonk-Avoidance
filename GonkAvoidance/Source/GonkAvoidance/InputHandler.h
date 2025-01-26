@@ -44,7 +44,7 @@ public:
 		*downArrow,
 		*leftArrow,
 		*rightArrow,
-		*keyEnter;
+		*keySpace;
 
 	void GeneralSelect(GeneralSelection generalSelection)
 	{

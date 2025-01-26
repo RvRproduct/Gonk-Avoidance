@@ -13,7 +13,7 @@ AInputHandler::AInputHandler()
 	downArrow = nullptr;
 	leftArrow = nullptr;
 	rightArrow = nullptr;
-	keyEnter = nullptr;
+	keySpace = nullptr;
 
 }
 

@@ -96,15 +96,16 @@ public:
 	// For A* Path Finding
 	TArray<ABaseTile*> setPathToTileTarget;
 	TArray<TPair<ABaseTile*, TilePathFinding*>> openPathToTileTarget;
-	TArray<TPair<ABaseTile*, TilePathFinding*>> closedPathToWaypointTarget;
+	TArray<TPair<ABaseTile*, TilePathFinding*>> closedPathToTileTarget;
 	TPair<ABaseTile*, TilePathFinding*> startPathTile;
 	TPair<ABaseTile*, TilePathFinding*> goalPathTile;
-	TPair<ABaseTile*, TilePathFinding*> lastPathWaypoint;
+	TPair<ABaseTile*, TilePathFinding*> lastPathTile;
 	ABaseTile* parentTile;
 
 	bool tilePathDone = false;
 	bool hasStartedSearch = false;
 	bool hasReachedDestination = true;
+	bool hasSelectedMovement = false;
 
 	// For The Seek
 	UPROPERTY(VisibleAnywhere, Category = "Current Tile")
@@ -132,6 +133,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void Seek(FVector tilePosition, float DeltaTime);
+
 	void ClearTilePath();
 	void BeginSearchTilePath();
 	void SearchTilePath(TPair<ABaseTile*, TilePathFinding*> thisPathTile);
@@ -139,6 +142,6 @@ public:
 	void SetTileGHF(TPair<ABaseTile*, TilePathFinding*> thisPathTile, ABaseTile* neighborTile, ABaseTile* goalTile);
 	bool IsClosedTile(ABaseTile* thisTile);
 	ABaseTile* GetClosestPossibleTileToPlayer();
-	void SetWaypointPath();
+	void SetTilePath();
 
 };

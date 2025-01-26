@@ -101,7 +101,7 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 				continue;
 			}
 
-			// Right
+			// Left
 			if (currentTileIndex + 1 < (currentColumn + 1) * lengthPerColumnsAndRows)
 			{
 				if (currentTileIndex + 1 < mapTiles.Num())
@@ -119,7 +119,7 @@ void AMapCreator::SetUpTilePathsAndUnits(UWorld* World)
 				}
 			}
 
-			// Left
+			// Right
 			if (currentTileIndex - 1 >= currentColumn * lengthPerColumnsAndRows)
 			{
 				if (currentTileIndex - 1 >= 0)
