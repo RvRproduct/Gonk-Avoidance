@@ -217,16 +217,6 @@ void ABaseUnit::BeginSearchTilePath()
 			{
 				goalPathTile.Key = targetAttackTile;
 
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(
-						-1,
-						5.f,
-						FColor::Yellow,
-						FString::Printf(TEXT("Goal Tile: %s"), *targetAttackTile->GetName())
-					);
-				}
-
 				if (currentTile == goalPathTile.Key)
 				{
 					tilePathDone = true;

@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "GameManager.generated.h"
 
+
+UENUM(BlueprintType)
+enum class TurnHolder : uint8
+{
+	None,
+	Player,
+	Opponenet
+};
+
 UENUM(BlueprintType)
 enum class CurrentMode : uint8
 {
@@ -28,6 +37,8 @@ public:
 
 	CurrentMode currentMode = CurrentMode::Move;
 	int turnNumber = 1;
+
+	TurnHolder currentTurnHolder = TurnHolder::Player;
 
 	TArray<ABaseUnit*> playerUnits;
 	TArray<ABaseUnit*> opponentUnits;
