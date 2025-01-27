@@ -24,14 +24,31 @@ class GONKAVOIDANCE_API MoveUpCommand : public Command
 public:
 	void Execute() override 
 	{
+		if (gameManager->currentMode == Mode::SelectUnit)
+		{
 
+		}
+		else if (gameManager->currentMode == Mode::Move)
+		{
+			tileSelector->UnitMovement(Movement::Up);
+		}
 	};
 };
 
 class GONKAVOIDANCE_API MoveDownCommand : public Command
 {
 public:
-	void Execute() override {};
+	void Execute() override 
+	{
+		if (gameManager->currentMode == Mode::SelectUnit)
+		{
+
+		}
+		else if (gameManager->currentMode == Mode::Move)
+		{
+			tileSelector->UnitMovement(Movement::Down);
+		}
+	};
 };
 
 class GONKAVOIDANCE_API MoveLeftCommand : public Command
@@ -42,6 +59,10 @@ public:
 		if (gameManager->currentMode == Mode::SelectUnit)
 		{
 			tileSelector->SelectUnit(Movement::Left);
+		}
+		else if (gameManager->currentMode == Mode::Move)
+		{
+			tileSelector->UnitMovement(Movement::Left);
 		}
 	};
 };
@@ -55,23 +76,21 @@ public:
 		{
 			tileSelector->SelectUnit(Movement::Right);
 		}
+		else if (gameManager->currentMode == Mode::Move)
+		{
+			tileSelector->UnitMovement(Movement::Right);
+		}
 	};
 };
 
-class GONKAVOIDANCE_API GeneralSelectCommand : public Command
+class GONKAVOIDANCE_API SelectCommand : public Command
 {
 public:
 	void Execute() override 
 	{
 		if (gameManager->currentMode == Mode::SelectUnit)
 		{
-
+			tileSelector->SelectionUnit();
 		}
 	};
-};
-
-class GONKAVOIDANCE_API CombatSelectCommand : public Command
-{
-public:
-	void Execute() override {};
 };

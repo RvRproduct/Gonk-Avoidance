@@ -55,6 +55,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void SelectUnit(Movement moveSelect);
-	void UnitMovement();
+	void ModeColorChange();
+	void SelectionUnit();
+	void UnitMovement(Movement movementInput);
+	void SelectMovement();
 
 };

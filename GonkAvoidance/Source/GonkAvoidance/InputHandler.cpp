@@ -23,6 +23,14 @@ void AInputHandler::BeginPlay()
 {
 	Super::BeginPlay();
 
+	upArrow = new MoveUpCommand();
+	upArrow->tileSelector = tileSelector;
+	upArrow->gameManager = gameManager;
+
+	downArrow = new MoveDownCommand();
+	downArrow->tileSelector = tileSelector;
+	downArrow->gameManager = gameManager;
+
 	leftArrow = new MoveLeftCommand();
 	leftArrow->tileSelector = tileSelector;
 	leftArrow->gameManager = gameManager;
@@ -30,6 +38,10 @@ void AInputHandler::BeginPlay()
 	rightArrow = new MoveRightCommand();
 	rightArrow->tileSelector = tileSelector;
 	rightArrow->gameManager = gameManager;
+
+	keySpace = new SelectCommand();
+	keySpace->tileSelector = tileSelector;
+	keySpace->gameManager = gameManager;
 	
 }
 
@@ -66,31 +78,31 @@ void AInputHandler::Move(const FInputActionValue& Value)
 {
 	FVector2D movementInput = Value.Get<FVector2D>();
 
-	if (gameManager->currentMode == Mode::SelectUnit)
+	if (movementInput.X < 0) // Left
 	{
-		if (movementInput.X < 0) // Left
-		{
-			MoveSelect(Movement::Left);
-		}
-		else if (movementInput.X > 0) // Right
-		{
+		MoveSelect(Movement::Left);
+	}
+	else if (movementInput.X > 0) // Right
+	{
 
-			MoveSelect(Movement::Right);
-		}
-		else if (movementInput.Y > 0) // Up
-		{
-
-		}
-		else if (movementInput.Y < 0) // Down
-		{
-
-		}
+		MoveSelect(Movement::Right);
+	}
+	else if (movementInput.Y > 0) // Up
+	{
+		MoveSelect(Movement::Up);
+	}
+	else if (movementInput.Y < 0) // Down
+	{
+		MoveSelect(Movement::Down);
 	}
 }
 
 void AInputHandler::Select(const FInputActionValue& Value)
 {
-	
+	if (Value.Get<bool>())
+	{
+		keySpace->Execute();
+	}
 }
 
 
@@ -106,11 +118,11 @@ void AInputHandler::MoveSelect(Movement moveInput)
 	}
 	else if (moveInput == Movement::Up)
 	{
-
+		upArrow->Execute();
 	}
 	else if (moveInput == Movement::Down)
 	{
-
+		downArrow->Execute();
 	}
 }
 

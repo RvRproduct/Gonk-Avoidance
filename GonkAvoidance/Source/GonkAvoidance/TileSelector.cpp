@@ -42,16 +42,7 @@ void ATileSelector::SelectUnit(Movement moveSelect)
 {
 	if (gameManager->currentMode == Mode::SelectUnit)
 	{
-		if (currentSelectColor != SelectColor::SelectUnitColor)
-		{
-			UStaticMeshComponent* Mesh = this->FindComponentByClass<UStaticMeshComponent>();
-			if (Mesh)
-			{
-				Mesh->SetMaterial(0, unitSelectMaterial);
-			}
-
-			currentSelectColor = SelectColor::SelectUnitColor;
-		}
+		ModeColorChange();
 
 		FVector selectorLocation = FVector::Zero();
 
@@ -84,9 +75,22 @@ void ATileSelector::SelectUnit(Movement moveSelect)
 	}	
 }
 
-void ATileSelector::UnitMovement()
+void ATileSelector::ModeColorChange()
 {
-	if (gameManager->currentMode == Mode::Move)
+	if (gameManager->currentMode == Mode::SelectUnit)
+	{
+		if (currentSelectColor != SelectColor::SelectUnitColor)
+		{
+			UStaticMeshComponent* Mesh = this->FindComponentByClass<UStaticMeshComponent>();
+			if (Mesh)
+			{
+				Mesh->SetMaterial(0, unitSelectMaterial);
+			}
+
+			currentSelectColor = SelectColor::SelectUnitColor;
+		}
+	}
+	else if (gameManager->currentMode == Mode::Move)
 	{
 		if (currentSelectColor != SelectColor::MoveColor)
 		{
@@ -98,7 +102,78 @@ void ATileSelector::UnitMovement()
 
 			currentSelectColor = SelectColor::MoveColor;
 		}
-		
+
+	}
+}
+
+void ATileSelector::SelectionUnit()
+{
+	gameManager->currentMode = Mode::Move;
+	gameManager->currentPlayerUnitControlled = gameManager->playerUnits[unitSelectIndex];
+	currentTile = gameManager->playerUnits[unitSelectIndex]->currentTile;
+
+	FVector selectorLocation = FVector::Zero();
+	selectorLocation = currentTile->GetActorLocation();
+	selectorLocation.Z = 700.0f;
+	SetActorLocation(selectorLocation);
+	ModeColorChange();
+}
+
+void ATileSelector::SelectMovement()
+{
+
+}
+
+
+void ATileSelector::UnitMovement(Movement movementInput)
+{
+	if (movementInput == Movement::Left)
+	{
+		if (currentTile->leftTile != nullptr)
+		{
+			currentTile = currentTile->leftTile;
+
+			FVector selectorLocation = FVector::Zero();
+			selectorLocation = currentTile->GetActorLocation();
+			selectorLocation.Z = 700.0f;
+			SetActorLocation(selectorLocation);
+		}
+	}
+	else if (movementInput == Movement::Right)
+	{
+		if (currentTile->rightTile != nullptr)
+		{
+			currentTile = currentTile->rightTile;
+
+			FVector selectorLocation = FVector::Zero();
+			selectorLocation = currentTile->GetActorLocation();
+			selectorLocation.Z = 700.0f;
+			SetActorLocation(selectorLocation);
+		}
+	}
+	else if (movementInput == Movement::Up)
+	{
+		if (currentTile->upTile != nullptr)
+		{
+			currentTile = currentTile->upTile;
+
+			FVector selectorLocation = FVector::Zero();
+			selectorLocation = currentTile->GetActorLocation();
+			selectorLocation.Z = 700.0f;
+			SetActorLocation(selectorLocation);
+		}
+	}
+	else if (movementInput == Movement::Down)
+	{
+		if (currentTile->downTile != nullptr)
+		{
+			currentTile = currentTile->downTile;
+
+			FVector selectorLocation = FVector::Zero();
+			selectorLocation = currentTile->GetActorLocation();
+			selectorLocation.Z = 700.0f;
+			SetActorLocation(selectorLocation);
+		}
 	}
 	
 }
