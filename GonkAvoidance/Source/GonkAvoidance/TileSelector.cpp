@@ -50,6 +50,8 @@ void ATileSelector::SelectUnit(Movement moveSelect)
 		}
 
 		FVector selectorLocation = gameManager->playerUnits[unitSelectIndex]->GetActorLocation();
+		selectorLocation.Z = 700.0f;
+		SetActorLocation(selectorLocation);
 
 		if (moveSelect == Movement::Left)
 		{
@@ -172,7 +174,13 @@ void ATileSelector::UndoConfirm()
 
 void ATileSelector::ConfirmMovement()
 {
-
+	if (currentUnit->goalPathTile.Key == currentUnit->currentTile)
+	{
+		currentUnit->activeUnit = false;
+		gameManager->currentTurnHolder = TurnHolder::Opponent;
+		gameManager->OnAIOpponentStart();
+		gameManager->currentMode = Mode::SelectUnit;
+	}
 }
 
 void ATileSelector::UnitMovement(Movement movementInput)

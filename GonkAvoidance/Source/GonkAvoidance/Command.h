@@ -100,6 +100,10 @@ public:
 		{
 			tileSelector->UndoConfirm();
 		}
+		else if (gameManager->currentMode == Mode::Undo)
+		{
+			tileSelector->ConfirmMovement();
+		}
 	};
 };
 

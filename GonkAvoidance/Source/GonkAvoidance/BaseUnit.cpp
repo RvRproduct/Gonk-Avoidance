@@ -50,20 +50,11 @@ void ABaseUnit::Tick(float DeltaTime)
 
 	if (!unitSetup) { return; }
 
-	if (unitController == UnitController::AI)
+	if (unitController == UnitController::AI && activeUnit)
 	{
 		if (gameManager->currentTurnHolder != TurnHolder::Opponent) { return; }
-	}
-	
-	if (unitController == UnitController::Player)
-	{
-		if (gameManager->currentTurnHolder != TurnHolder::Player) { return; }
-	}
 
-	if (hasReachedDestination && gameManager->currentMode != Mode::SelectUnit && gameManager->currentMode != Mode::Move && activeUnit)
-	{
-
-		if (!undoActive && !redoActive && moveState)
+		if (hasReachedDestination)
 		{
 			if (!hasStartedSearch)
 			{
@@ -82,47 +73,92 @@ void ABaseUnit::Tick(float DeltaTime)
 				hasReachedDestination = false;
 			}
 		}
-		else if (gameManager->currentMode == Mode::Undo && undoActive)
+		else
 		{
-			undoActive = false;
-			gameManager->currentMode = Mode::Redo;
-			setPathToTileTarget = undoPath;
-			// Set the new goal
-			if (setPathToTileTarget.Num() > 0)
+			if (currentTile != goalPathTile.Key)
 			{
-				goalPathTile.Key = setPathToTileTarget[0];
+				Seek(nextTile->GetActorLocation(), DeltaTime);
 			}
 
-			hasReachedDestination = false;
-		}
-		else if (gameManager->currentMode == Mode::Redo && redoActive)
-		{
-			redoActive = false;
-			gameManager->currentMode = Mode::Undo;
-			setPathToTileTarget = redoPath;
-
-			// Set the new goal
-			if (setPathToTileTarget.Num() > 0)
+			if (currentTile == goalPathTile.Key)
 			{
-				goalPathTile.Key = setPathToTileTarget[0];
+				gameManager->currentTurnHolder = TurnHolder::Player;
+				activeUnit = false;
+				hasSelectedMovement = false;
+				hasStartedSearch = false;
+				hasReachedDestination = true;
 			}
-
-			hasReachedDestination = false;
 		}
 	}
-	else
+	
+	if (unitController == UnitController::Player)
 	{
-		if (currentTile != goalPathTile.Key)
-		{
-			Seek(nextTile->GetActorLocation(), DeltaTime);
-		}
+		if (gameManager->currentTurnHolder != TurnHolder::Player) { return; }
 
-		if (currentTile == goalPathTile.Key)
+		if (hasReachedDestination && gameManager->currentMode != Mode::SelectUnit && gameManager->currentMode != Mode::Move && activeUnit)
 		{
-			
-			hasSelectedMovement = false;
-			hasStartedSearch = false;
-			hasReachedDestination = true;		
+
+			if (!undoActive && !redoActive && moveState)
+			{
+				if (!hasStartedSearch)
+				{
+					hasStartedSearch = true;
+					BeginSearchTilePath();
+				}
+
+				if (!tilePathDone)
+				{
+					SearchTilePath(lastPathTile);
+				}
+
+				if (tilePathDone)
+				{
+					SetTilePath();
+					hasReachedDestination = false;
+				}
+			}
+			else if (gameManager->currentMode == Mode::Undo && undoActive)
+			{
+				undoActive = false;
+				gameManager->currentMode = Mode::Redo;
+				setPathToTileTarget = undoPath;
+				// Set the new goal
+				if (setPathToTileTarget.Num() > 0)
+				{
+					goalPathTile.Key = setPathToTileTarget[0];
+				}
+
+				hasReachedDestination = false;
+			}
+			else if (gameManager->currentMode == Mode::Redo && redoActive)
+			{
+				redoActive = false;
+				gameManager->currentMode = Mode::Undo;
+				setPathToTileTarget = redoPath;
+
+				// Set the new goal
+				if (setPathToTileTarget.Num() > 0)
+				{
+					goalPathTile.Key = setPathToTileTarget[0];
+				}
+
+				hasReachedDestination = false;
+			}
+		}
+		else
+		{
+			if (currentTile != goalPathTile.Key)
+			{
+				Seek(nextTile->GetActorLocation(), DeltaTime);
+			}
+
+			if (currentTile == goalPathTile.Key)
+			{
+
+				hasSelectedMovement = false;
+				hasStartedSearch = false;
+				hasReachedDestination = true;
+			}
 		}
 	}
 }
