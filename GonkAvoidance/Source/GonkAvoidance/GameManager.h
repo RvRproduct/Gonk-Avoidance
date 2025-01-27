@@ -16,15 +16,16 @@ enum class TurnHolder : uint8
 };
 
 UENUM(BlueprintType)
-enum class CurrentMode : uint8
+enum class Mode : uint8
 {
 	None,
+	SelectUnit,
 	Move,
 	Combat
 };
 
 class ABaseUnit;
-
+class ABaseTile;
 
 UCLASS()
 class GONKAVOIDANCE_API AGameManager : public AActor
@@ -35,12 +36,15 @@ public:
 	// Sets default values for this actor's properties
 	AGameManager();
 
-	CurrentMode currentMode = CurrentMode::Move;
+	Mode currentMode = Mode::SelectUnit;
 	int turnNumber = 1;
 
 	TurnHolder currentTurnHolder = TurnHolder::Player;
 
 	TArray<ABaseUnit*> playerUnits;
+	ABaseUnit* currentPlayerUnitControlled;
+	ABaseTile* currentSelectorTile;
+
 	TArray<ABaseUnit*> opponentUnits;
 
 	bool mapCreationFinished = false;
@@ -55,6 +59,6 @@ public:
 
 	void OnAIOpponentStart();
 	void CheckCurrentTurnHolder();
-	void ChangeMode(CurrentMode modeChange);
+	void ChangeMode(Mode modeChange);
 
 };

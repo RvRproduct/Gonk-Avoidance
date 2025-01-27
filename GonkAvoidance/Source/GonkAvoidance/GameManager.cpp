@@ -58,7 +58,7 @@ void AGameManager::OnAIOpponentStart()
 	
 }
 
-void AGameManager::ChangeMode(CurrentMode modeChange)
+void AGameManager::ChangeMode(Mode modeChange)
 {
 	currentMode = modeChange;
 }
