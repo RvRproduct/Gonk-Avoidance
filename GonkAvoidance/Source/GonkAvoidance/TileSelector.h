@@ -32,6 +32,7 @@ public:
 	SelectColor currentSelectColor = SelectColor::None;
 
 	ABaseTile* currentTile;
+	ABaseUnit* currentUnit;
 	int unitSelectIndex = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Manager")

@@ -116,12 +116,18 @@ void ATileSelector::SelectionUnit()
 	selectorLocation = currentTile->GetActorLocation();
 	selectorLocation.Z = 700.0f;
 	SetActorLocation(selectorLocation);
+
+	currentUnit = gameManager->playerUnits[unitSelectIndex];
 	ModeColorChange();
 }
 
 void ATileSelector::SelectMovement()
 {
 
+	if (currentUnit->playerTargetTile == nullptr)
+	{
+		currentUnit->playerTargetTile = currentTile;
+	}	
 }
 
 

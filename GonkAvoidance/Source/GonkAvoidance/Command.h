@@ -92,5 +92,9 @@ public:
 		{
 			tileSelector->SelectionUnit();
 		}
+		else if (gameManager->currentMode == Mode::Move)
+		{
+			tileSelector->SelectMovement();
+		}
 	};
 };

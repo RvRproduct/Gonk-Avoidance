@@ -136,7 +136,6 @@ void ABaseUnit::ClearTilePath()
 		lastPathTile.Value = new TilePathFinding();
 	}
 
-	lastPathTile.Key = nullptr;
 	lastPathTile.Value->F = 0.0f;
 	lastPathTile.Value->G = 0.0f;
 	lastPathTile.Value->H = 0.0f;
@@ -245,7 +244,26 @@ void ABaseUnit::BeginSearchTilePath()
 	}
 	else if (unitController == UnitController::Player)
 	{
+		if (playerTargetTile != nullptr)
+		{
+			goalPathTile.Key = playerTargetTile;
 
+			if (currentTile == goalPathTile.Key)
+			{
+				return;
+			}
+		}
+		else
+		{
+			goalPathTile.Key = currentTile;
+			return;
+		}
+
+		openPathToTileTarget.Empty();
+		closedPathToTileTarget.Empty();
+
+		openPathToTileTarget.Add(startPathTile);
+		lastPathTile.Key = startPathTile.Key;
 	}
 }
 

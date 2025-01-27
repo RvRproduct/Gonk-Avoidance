@@ -74,6 +74,8 @@ public:
 	// Is the Unit Setup
 	bool unitSetup = false;
 
+	ABaseTile* playerTargetTile = nullptr;
+
 	// Unit Controller By (AI, Player, PlayerTwo)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Unit Controller Type")
 	UnitController unitController = UnitController::None;
