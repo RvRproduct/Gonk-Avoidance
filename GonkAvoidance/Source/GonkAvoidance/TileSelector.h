@@ -61,6 +61,7 @@ public:
 	void UnitMovement(Movement movementInput);
 	void SelectMovement();
 	void UndoMovement();
+	void UndoConfirm();
 	void RedoMovement();
 	void ConfirmMovement();
 

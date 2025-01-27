@@ -60,7 +60,7 @@ void ABaseUnit::Tick(float DeltaTime)
 		if (gameManager->currentTurnHolder != TurnHolder::Player) { return; }
 	}
 
-	if (hasReachedDestination)
+	if (hasReachedDestination && gameManager->currentMode != Mode::SelectUnit && gameManager->currentMode != Mode::Move && activeUnit)
 	{
 
 		if (!undoActive && !redoActive && moveState)
@@ -486,11 +486,6 @@ void ABaseUnit::Seek(FVector tilePosition, float DeltaTime)
 	{
 		currentVelocity = FVector::ZeroVector;
 		SetActorLocation(newUnitPosition);
-
-		if (!undoFilled)
-		{
-			undoPath.Add(currentTile);
-		}
 		
 		currentTile = nextTile;
 
@@ -499,7 +494,6 @@ void ABaseUnit::Seek(FVector tilePosition, float DeltaTime)
 			if (setPathToTileTarget.Num() > 0)
 			{
 				nextTile = setPathToTileTarget.Pop();
-				undoFilled = true;
 			}
 		}
 		

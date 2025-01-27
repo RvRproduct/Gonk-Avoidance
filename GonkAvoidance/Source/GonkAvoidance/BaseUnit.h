@@ -78,7 +78,6 @@ public:
 
 	bool undoActive = false;
 	bool redoActive = false;
-	bool undoFilled = true;
 	bool moveState = true;
 	bool initialChoiceComplete = false;
 

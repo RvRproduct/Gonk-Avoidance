@@ -44,7 +44,12 @@ void ATileSelector::SelectUnit(Movement moveSelect)
 	{
 		ModeColorChange();
 
-		FVector selectorLocation = FVector::Zero();
+		if (currentUnit != nullptr)
+		{
+			currentUnit->moveState = true;
+		}
+
+		FVector selectorLocation = gameManager->playerUnits[unitSelectIndex]->GetActorLocation();
 
 		if (moveSelect == Movement::Left)
 		{
@@ -118,6 +123,7 @@ void ATileSelector::SelectionUnit()
 	SetActorLocation(selectorLocation);
 
 	currentUnit = gameManager->playerUnits[unitSelectIndex];
+	currentUnit->activeUnit = true;
 	ModeColorChange();
 }
 
@@ -138,13 +144,6 @@ void ATileSelector::UndoMovement()
 	{
 		currentUnit->undoActive = true;
 	}
-	else
-		GEngine->AddOnScreenDebugMessage(
-			-1,
-			5.f,
-			FColor::Yellow,
-			FString::Printf(TEXT("False"))
-		);
 	
 }
 
@@ -156,6 +155,20 @@ void ATileSelector::RedoMovement()
 	}
 	
 }
+
+void ATileSelector::UndoConfirm()
+{
+	if (currentUnit->goalPathTile.Key == currentUnit->currentTile)
+	{
+		gameManager->currentMode = Mode::SelectUnit;
+		currentUnit->redoActive = false;
+		currentUnit->undoActive = false;
+		currentUnit->activeUnit = false;
+		SelectUnit(Movement::None);
+		currentUnit->setPathToTileTarget.Empty();
+	}
+}
+
 
 void ATileSelector::ConfirmMovement()
 {

@@ -96,6 +96,10 @@ public:
 		{
 			tileSelector->SelectMovement();
 		}
+		else if (gameManager->currentMode == Mode::Redo)
+		{
+			tileSelector->UndoConfirm();
+		}
 	};
 };
 
