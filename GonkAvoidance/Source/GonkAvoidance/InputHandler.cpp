@@ -14,6 +14,8 @@ AInputHandler::AInputHandler()
 	downArrow = nullptr;
 	leftArrow = nullptr;
 	rightArrow = nullptr;
+	zKey = nullptr;
+	yKey = nullptr;
 	keySpace = nullptr;
 
 }
@@ -38,6 +40,14 @@ void AInputHandler::BeginPlay()
 	rightArrow = new MoveRightCommand();
 	rightArrow->tileSelector = tileSelector;
 	rightArrow->gameManager = gameManager;
+
+	zKey = new UndoCommand();
+	zKey->tileSelector = tileSelector;
+	zKey->gameManager = gameManager;
+
+	yKey = new RedoCommand();
+	yKey->tileSelector = tileSelector;
+	yKey->gameManager = gameManager;
 
 	keySpace = new SelectCommand();
 	keySpace->tileSelector = tileSelector;
@@ -67,9 +77,11 @@ void AInputHandler::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		// Binding Each Movement Direction
+		// Binding Each Input
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AInputHandler::Move);
 		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Triggered, this, &AInputHandler::Select);
+		EnhancedInputComponent->BindAction(UndoAction, ETriggerEvent::Triggered, this, &AInputHandler::Undo);
+		EnhancedInputComponent->BindAction(RedoAction, ETriggerEvent::Triggered, this, &AInputHandler::Redo);
 	}
 
 }
@@ -123,6 +135,23 @@ void AInputHandler::MoveSelect(Movement moveInput)
 	else if (moveInput == Movement::Down)
 	{
 		downArrow->Execute();
+	}
+}
+
+void AInputHandler::Undo(const FInputActionValue& Value)
+{
+	if (Value.Get<bool>())
+	{
+		zKey->Execute();
+	}
+	
+}
+
+void AInputHandler::Redo(const FInputActionValue& Value)
+{
+	if (Value.Get<bool>())
+	{
+		yKey->Execute();
 	}
 }
 

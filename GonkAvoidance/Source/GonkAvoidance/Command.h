@@ -98,3 +98,27 @@ public:
 		}
 	};
 };
+
+class GONKAVOIDANCE_API UndoCommand : public Command
+{
+public:
+	void Execute() override
+	{
+		if (gameManager->currentMode == Mode::Undo)
+		{
+			tileSelector->UndoMovement();
+		}
+	};
+};
+
+class GONKAVOIDANCE_API RedoCommand : public Command
+{
+public:
+	void Execute() override
+	{
+		if (gameManager->currentMode == Mode::Redo)
+		{
+			tileSelector->RedoMovement();
+		}
+	};
+};

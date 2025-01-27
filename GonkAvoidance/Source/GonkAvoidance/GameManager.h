@@ -21,6 +21,8 @@ enum class Mode : uint8
 	None,
 	SelectUnit,
 	Move,
+	Undo,
+	Redo,
 	Combat
 };
 

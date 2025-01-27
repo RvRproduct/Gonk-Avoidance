@@ -127,9 +127,40 @@ void ATileSelector::SelectMovement()
 	if (currentUnit->playerTargetTile == nullptr)
 	{
 		currentUnit->playerTargetTile = currentTile;
+
+		gameManager->currentMode = Mode::Undo;
 	}	
 }
 
+void ATileSelector::UndoMovement()
+{
+	if (currentUnit->goalPathTile.Key == currentUnit->currentTile)
+	{
+		currentUnit->undoActive = true;
+	}
+	else
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			5.f,
+			FColor::Yellow,
+			FString::Printf(TEXT("False"))
+		);
+	
+}
+
+void ATileSelector::RedoMovement()
+{
+	if (currentUnit->goalPathTile.Key == currentUnit->currentTile)
+	{
+		currentUnit->redoActive = true;
+	}
+	
+}
+
+void ATileSelector::ConfirmMovement()
+{
+
+}
 
 void ATileSelector::UnitMovement(Movement movementInput)
 {

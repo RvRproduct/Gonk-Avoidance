@@ -61,12 +61,13 @@ public:
 
 	UnitType unitType = UnitType::None;
 
-
 	Command
 		*upArrow,
 		*downArrow,
 		*leftArrow,
 		*rightArrow,
+		*zKey,
+		*yKey,
 		*keySpace;
 
 	void GeneralSelect(GeneralSelection generalSelection);
@@ -82,6 +83,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> SelectAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> UndoAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> RedoAction;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -95,5 +102,7 @@ public:
 
 	void Move(const FInputActionValue& Value);
 	void Select(const FInputActionValue& Value);
+	void Undo(const FInputActionValue& Value);
+	void Redo(const FInputActionValue& Value);
 
 };

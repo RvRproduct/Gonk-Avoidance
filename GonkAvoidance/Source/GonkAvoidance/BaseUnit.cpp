@@ -3,6 +3,7 @@
 
 #include "BaseUnit.h"
 #include "Kismet/GameplayStatics.h"
+#include "Algo/Reverse.h"
 
 
 // Sets default values
@@ -61,20 +62,51 @@ void ABaseUnit::Tick(float DeltaTime)
 
 	if (hasReachedDestination)
 	{
-		if (!hasStartedSearch)
-		{
-			hasStartedSearch = true;
-			BeginSearchTilePath();
-		}
 
-		if (!tilePathDone)
+		if (!undoActive && !redoActive && moveState)
 		{
-			SearchTilePath(lastPathTile);
-		}
+			if (!hasStartedSearch)
+			{
+				hasStartedSearch = true;
+				BeginSearchTilePath();
+			}
 
-		if (tilePathDone)
+			if (!tilePathDone)
+			{
+				SearchTilePath(lastPathTile);
+			}
+
+			if (tilePathDone)
+			{
+				SetTilePath();
+				hasReachedDestination = false;
+			}
+		}
+		else if (gameManager->currentMode == Mode::Undo && undoActive)
 		{
-			SetTilePath();
+			undoActive = false;
+			gameManager->currentMode = Mode::Redo;
+			setPathToTileTarget = undoPath;
+			// Set the new goal
+			if (setPathToTileTarget.Num() > 0)
+			{
+				goalPathTile.Key = setPathToTileTarget[0];
+			}
+
+			hasReachedDestination = false;
+		}
+		else if (gameManager->currentMode == Mode::Redo && redoActive)
+		{
+			redoActive = false;
+			gameManager->currentMode = Mode::Undo;
+			setPathToTileTarget = redoPath;
+
+			// Set the new goal
+			if (setPathToTileTarget.Num() > 0)
+			{
+				goalPathTile.Key = setPathToTileTarget[0];
+			}
+
 			hasReachedDestination = false;
 		}
 	}
@@ -87,12 +119,12 @@ void ABaseUnit::Tick(float DeltaTime)
 
 		if (currentTile == goalPathTile.Key)
 		{
+			
 			hasSelectedMovement = false;
 			hasStartedSearch = false;
-			hasReachedDestination = true;
+			hasReachedDestination = true;		
 		}
 	}
-
 }
 
 // Called to bind functionality to input
@@ -124,7 +156,7 @@ void ABaseUnit::ClearTilePath()
 		goalPathTile.Value = new TilePathFinding();
 	}
 
-	goalPathTile.Key = nullptr;
+	//goalPathTile.Key = nullptr;
 	goalPathTile.Value->F = 0.0f;
 	goalPathTile.Value->G = 0.0f;
 	goalPathTile.Value->H = 0.0f;
@@ -149,6 +181,7 @@ void ABaseUnit::BeginSearchTilePath()
 	ClearTilePath();
 
 	startPathTile.Key = currentTile;
+	
 
 	if (unitController == UnitController::AI)
 	{
@@ -417,18 +450,28 @@ void ABaseUnit::SetTilePath()
 		beginPathTileFinding = beginPathTileFinding->parentTileFinding;
 	}
 
+	if (setPathToTileTarget.Num() > 1)
+	{
+
+		undoPath = setPathToTileTarget;
+		Algo::Reverse(undoPath);
+		redoPath = setPathToTileTarget;
+
+		moveState = false;
+	}
+
 	if (beginPathTile != startPathTile.Key)
 	{
 		setPathToTileTarget.Add(startPathTile.Key);
 	}
 
-	if (setPathToTileTarget.Num() > 0)
+	/*if (setPathToTileTarget.Num() > 0)
 	{
 		while (nextTile == currentTile && setPathToTileTarget.Num() > 0)
 		{
 			nextTile = setPathToTileTarget.Pop();
 		}
-	}
+	}*/
 }
 
 void ABaseUnit::Seek(FVector tilePosition, float DeltaTime)
@@ -444,13 +487,22 @@ void ABaseUnit::Seek(FVector tilePosition, float DeltaTime)
 		currentVelocity = FVector::ZeroVector;
 		SetActorLocation(newUnitPosition);
 
+		if (!undoFilled)
+		{
+			undoPath.Add(currentTile);
+		}
+		
+		currentTile = nextTile;
+
 		if (!hasReachedDestination)
 		{
 			if (setPathToTileTarget.Num() > 0)
 			{
 				nextTile = setPathToTileTarget.Pop();
-			}	
+				undoFilled = true;
+			}
 		}
+		
 
 		return;
 	}

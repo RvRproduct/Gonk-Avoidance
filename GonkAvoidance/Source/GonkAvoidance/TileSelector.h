@@ -60,5 +60,8 @@ public:
 	void SelectionUnit();
 	void UnitMovement(Movement movementInput);
 	void SelectMovement();
+	void UndoMovement();
+	void RedoMovement();
+	void ConfirmMovement();
 
 };

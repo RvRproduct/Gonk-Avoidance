@@ -76,9 +76,15 @@ public:
 
 	ABaseTile* playerTargetTile = nullptr;
 
+	bool undoActive = false;
+	bool redoActive = false;
+	bool undoFilled = true;
+	bool moveState = true;
+	bool initialChoiceComplete = false;
+
 	// Unit Controller By (AI, Player, PlayerTwo)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Unit Controller Type")
-	UnitController unitController = UnitController::None;
+	UnitController unitController;
 
 	// Unit Color and Current Tile Color
 	CurrentTileColor currentColorTile = CurrentTileColor::None;
@@ -101,6 +107,12 @@ public:
 	// For A* Path Finding
 	UPROPERTY(VisibleAnywhere, Category = "Path To Target")
 	TArray<ABaseTile*> setPathToTileTarget;
+
+	UPROPERTY(VisibleAnywhere, Category = "Undo path")
+	TArray<ABaseTile*> undoPath;
+
+	UPROPERTY(VisibleAnywhere, Category = "Redo Path")
+	TArray<ABaseTile*> redoPath;
 
 	TArray<TPair<ABaseTile*, TilePathFinding*>> openPathToTileTarget;
 	TArray<TPair<ABaseTile*, TilePathFinding*>> closedPathToTileTarget;
