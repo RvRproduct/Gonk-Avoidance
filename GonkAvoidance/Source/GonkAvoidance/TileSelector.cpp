@@ -55,7 +55,7 @@ void ATileSelector::SelectUnit(Movement moveSelect)
 
 		FVector selectorLocation = FVector::Zero();
 
-		if (moveSelect == Movement::Right)
+		if (moveSelect == Movement::Left)
 		{
 			unitSelectIndex++;
 
@@ -68,7 +68,7 @@ void ATileSelector::SelectUnit(Movement moveSelect)
 			selectorLocation.Z = 700.0f;
 			SetActorLocation(selectorLocation);
 		}
-		else if (moveSelect == Movement::Left)
+		else if (moveSelect == Movement::Right)
 		{
 			unitSelectIndex--;
 

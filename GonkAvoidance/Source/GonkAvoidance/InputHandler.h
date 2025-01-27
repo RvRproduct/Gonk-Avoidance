@@ -26,6 +26,7 @@ enum class GeneralSelection : uint8
 {
 	None,
 	ConfirmMovement,
+	ConfirmUnit,
 	UndoMovement,
 	RedoMovement,
 	ConfirmCombat

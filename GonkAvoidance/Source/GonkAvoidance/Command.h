@@ -61,7 +61,13 @@ public:
 class GONKAVOIDANCE_API GeneralSelectCommand : public Command
 {
 public:
-	void Execute() override {};
+	void Execute() override 
+	{
+		if (gameManager->currentMode == Mode::SelectUnit)
+		{
+
+		}
+	};
 };
 
 class GONKAVOIDANCE_API CombatSelectCommand : public Command

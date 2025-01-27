@@ -74,6 +74,7 @@ void AInputHandler::Move(const FInputActionValue& Value)
 		}
 		else if (movementInput.X > 0) // Right
 		{
+
 			MoveSelect(Movement::Right);
 		}
 		else if (movementInput.Y > 0) // Up
@@ -116,6 +117,10 @@ void AInputHandler::MoveSelect(Movement moveInput)
 void AInputHandler::GeneralSelect(GeneralSelection generalSelection)
 {
 	if (generalSelection == GeneralSelection::ConfirmMovement)
+	{
+
+	}
+	else if (generalSelection == GeneralSelection::ConfirmUnit)
 	{
 
 	}
