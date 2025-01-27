@@ -79,7 +79,6 @@ public:
 	bool undoActive = false;
 	bool redoActive = false;
 	bool moveState = true;
-	bool initialChoiceComplete = false;
 
 	// Unit Controller By (AI, Player, PlayerTwo)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Unit Controller Type")

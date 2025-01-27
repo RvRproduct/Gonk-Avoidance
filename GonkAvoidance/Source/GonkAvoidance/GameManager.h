@@ -41,7 +41,7 @@ public:
 	Mode currentMode = Mode::SelectUnit;
 	int turnNumber = 1;
 
-	TurnHolder currentTurnHolder = TurnHolder::Player;
+	TurnHolder currentTurnHolder = TurnHolder::Opponent;
 
 	TArray<ABaseUnit*> playerUnits;
 	ABaseUnit* currentPlayerUnitControlled;

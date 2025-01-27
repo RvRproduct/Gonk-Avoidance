@@ -25,6 +25,7 @@ void AMapCreator::BeginPlay()
 	CreateMap(World);
 
 	gameManager->mapCreationFinished = true;
+	gameManager->OnAIOpponentStart();
 
 }
 

@@ -29,6 +29,16 @@ void ATileSelector::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (gameManager->currentTurnHolder == TurnHolder::Player)
+	{
+		if (gameManager->currentMode == Mode::None)
+		{
+			gameManager->currentMode = Mode::SelectUnit;
+			SelectUnit(Movement::None);
+		}
+	}
+	
+
 }
 
 // Called to bind functionality to input
@@ -44,16 +54,17 @@ void ATileSelector::SelectUnit(Movement moveSelect)
 	{
 		ModeColorChange();
 
-		if (currentUnit != nullptr)
-		{
-			currentUnit->moveState = true;
-		}
-
 		FVector selectorLocation = gameManager->playerUnits[unitSelectIndex]->GetActorLocation();
 		selectorLocation.Z = 700.0f;
-		SetActorLocation(selectorLocation);
 
-		if (moveSelect == Movement::Left)
+		if (moveSelect == Movement::None)
+		{
+			gameManager->playerUnits[unitSelectIndex]->GetActorLocation();
+			selectorLocation.Z = 700.0f;
+			
+			SetActorLocation(selectorLocation);
+		}
+		else if (moveSelect == Movement::Left)
 		{
 			unitSelectIndex++;
 
@@ -179,7 +190,19 @@ void ATileSelector::ConfirmMovement()
 		currentUnit->activeUnit = false;
 		gameManager->currentTurnHolder = TurnHolder::Opponent;
 		gameManager->OnAIOpponentStart();
-		gameManager->currentMode = Mode::SelectUnit;
+		currentUnit->playerTargetTile = nullptr;
+		gameManager->currentMode = Mode::None;
+
+		if (gameManager->playerUnits.Num() > 0)
+		{
+			for (auto* unit : gameManager->playerUnits)
+			{
+				if (unit != nullptr)
+				{
+					unit->moveState = true;
+				}
+			}
+		}
 	}
 }
 

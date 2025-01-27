@@ -486,28 +486,36 @@ void ABaseUnit::SetTilePath()
 		beginPathTileFinding = beginPathTileFinding->parentTileFinding;
 	}
 
-	if (setPathToTileTarget.Num() > 1)
+	if (gameManager->currentTurnHolder == TurnHolder::Player && unitController == UnitController::Player)
 	{
+		if (setPathToTileTarget.Num() > 1)
+		{
 
-		undoPath = setPathToTileTarget;
-		Algo::Reverse(undoPath);
-		redoPath = setPathToTileTarget;
+			undoPath = setPathToTileTarget;
+			Algo::Reverse(undoPath);
+			redoPath = setPathToTileTarget;
 
-		moveState = false;
+			moveState = false;
+		}
 	}
+	
 
 	if (beginPathTile != startPathTile.Key)
 	{
 		setPathToTileTarget.Add(startPathTile.Key);
 	}
 
-	/*if (setPathToTileTarget.Num() > 0)
+	if (gameManager->currentTurnHolder == TurnHolder::Opponent && unitController == UnitController::AI)
 	{
-		while (nextTile == currentTile && setPathToTileTarget.Num() > 0)
+		if (setPathToTileTarget.Num() > 0)
 		{
-			nextTile = setPathToTileTarget.Pop();
+			while (nextTile == currentTile && setPathToTileTarget.Num() > 0)
+			{
+				nextTile = setPathToTileTarget.Pop();
+			}
 		}
-	}*/
+	}
+	
 }
 
 void ABaseUnit::Seek(FVector tilePosition, float DeltaTime)

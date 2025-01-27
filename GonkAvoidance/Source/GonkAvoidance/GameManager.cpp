@@ -38,24 +38,23 @@ void AGameManager::CheckCurrentTurnHolder()
 
 void AGameManager::OnAIOpponentStart()
 {
-	if (opponentUnits.Num() > 0)
-	{
-		int randomUnitSelect = FMath::RandRange(0, opponentUnits.Num() - 1);
+    if (opponentUnits.Num() > 0)
+    {
+        int randomUnitSelect = FMath::RandRange(0, opponentUnits.Num() - 1);
 
-		for (int unitIndex = 0; unitIndex < opponentUnits.Num(); unitIndex)
-		{
-			if (unitIndex == randomUnitSelect)
-			{
-				opponentUnits[unitIndex]->activeUnit = true;
-			}
-			else
-			{
-				opponentUnits[unitIndex]->activeUnit = false;
-			}
-		}
-	}
+        for (auto* unit : opponentUnits)
+        {
+            if (unit)
+            {
+                unit->activeUnit = false;
+            }
+        }
 
-	
+        if (opponentUnits[randomUnitSelect])
+        {
+            opponentUnits[randomUnitSelect]->activeUnit = true;
+        }
+    }
 }
 
 void AGameManager::ChangeMode(Mode modeChange)
