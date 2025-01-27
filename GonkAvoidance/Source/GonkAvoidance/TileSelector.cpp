@@ -177,8 +177,20 @@ void ATileSelector::UndoConfirm()
 		currentUnit->redoActive = false;
 		currentUnit->undoActive = false;
 		currentUnit->activeUnit = false;
+		currentUnit->playerTargetTile = nullptr;
 		SelectUnit(Movement::None);
 		currentUnit->setPathToTileTarget.Empty();
+
+		if (gameManager->playerUnits.Num() > 0)
+		{
+			for (auto* unit : gameManager->playerUnits)
+			{
+				if (unit != nullptr)
+				{
+					unit->moveState = true;
+				}
+			}
+		}
 	}
 }
 
